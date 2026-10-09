@@ -10,7 +10,6 @@ via env vars — no refactor.
 ## Apps & packages
 
 | Path | Description |
-|---|---|
 | `apps/extractor` | Next.js 15 OCR upload tool (open, SaaS-ready) |
 | `apps/admin` | Next.js 15 admin portal (auth-gated) |
 | `packages/types` | Zod schemas + TS types (single source of truth) |

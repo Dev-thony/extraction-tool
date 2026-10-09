@@ -20,6 +20,7 @@ coverage/
 .env.local
 .env.*.local
 !.env.example
+README.md
 
 # Prisma generated client (regenerated on install)
 packages/db/generated/
@@ -38,3 +39,26 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Android / Bubblewrap
+android/*/node_modules/
+android/*/decompressed/
+android/*/build/
+android/*/.gradle/
+android/*/app/build/
+android/*/*.apk
+android/*/*.aab
+android/*/*.keystore
+android/*/*.jks
+android/*/keystore/*
+
+# Local backups and audit artifacts
+extraction-backup*.sql
+.responsive-audit-backups/
+.uiux-backups/
+.uiux-reports/
+reports/
+
+# Uploaded user data
+apps/*/storage/uploads/*
+!apps/*/storage/uploads/.gitkeep

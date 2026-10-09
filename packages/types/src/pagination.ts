@@ -8,6 +8,7 @@ export const RECORD_SORT_FIELDS = [
   'userName',
   'email',
   'phoneNumber',
+  'pukNumber',
   'status',
   'confidence',
 ] as const;

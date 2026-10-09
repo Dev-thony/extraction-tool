@@ -1,0 +1,193 @@
+// Prisma schema for the Handwritten Data Extraction Platform.
+//
+// Enum values are kept identical to packages/types/src/enums.ts — update both
+// together. Provider is PostgreSQL from day one; set DATABASE_URL to a Neon or
+// Supabase connection string.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  NEEDS_REVIEW
+  PROCESSED
+  FAILED
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String?
+  role         Role      @default(STAFF)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model Record {
+  id          String  @id @default(cuid())
+  imageUrl    String
+  imageKey    String
+  fullName    String?
+  userName    String? // surfaced as "Partnership Name" in the admin UI
+  phoneNumber String?
+  email       String?
+  pukNumber   String?
+
+  confidence       Float?
+  fieldConfidences Json? // per-field 0..1 confidences for review highlighting
+  rawOCR           String?
+  status           ProcessingStatus @default(PENDING)
+
+  // Free-form uploader label while the extractor is open; becomes a User FK
+  // once accounts are introduced (SaaS phase).
+  uploadedBy String?
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  logs      ProcessingLog[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("records")
+}
+
+model ProcessingLog {
+  id        String   @id @default(cuid())
+  recordId  String?
+  record    Record?  @relation(fields: [recordId], references: [id], onDelete: SetNull)
+  event     String
+  level     LogLevel @default(INFO)
+  message   String
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([recordId])
+  @@index([level])
+  @@map("processing_logs")
+}
+
+enum BatchStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  COMPLETED_WITH_ERRORS
+  FAILED
+  CANCELLED
+}
+
+enum BatchItemStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  NEEDS_REVIEW
+  FAILED
+  CANCELLED
+}
+
+enum BatchSource {
+  LOCAL
+  ZIP
+  GOOGLE_DRIVE
+}
+
+model ExtractionBatch {
+  id String @id @default(cuid())
+
+  name String?
+
+  source BatchSource
+
+  status BatchStatus @default(QUEUED)
+
+  totalItems      Int @default(0)
+  queuedItems     Int @default(0)
+  processingItems Int @default(0)
+  completedItems  Int @default(0)
+  failedItems     Int @default(0)
+  reviewItems     Int @default(0)
+
+  createdAt   DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  items ExtractionBatchItem[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ExtractionBatchItem {
+  id String @id @default(cuid())
+
+  batchId String
+  batch   ExtractionBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  status BatchItemStatus @default(QUEUED)
+
+  filename String?
+  mimeType String?
+
+  source       BatchSource
+  sourceFileId String?
+  sourceKey    String?
+
+  recordIds String[]
+
+  attempts Int @default(0)
+
+  error       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([batchId])
+  @@index([status])
+  @@index([sourceFileId])
+}
+
+model BatchProcessingLog {
+  id String @id @default(cuid())
+
+  batchId     String
+  batchItemId String?
+
+  event String
+  level String
+
+  message String
+
+  meta Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([batchId])
+  @@index([batchItemId])
+  @@index([createdAt])
+}
