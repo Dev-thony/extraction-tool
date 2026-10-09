@@ -7,6 +7,8 @@ import { hashPassword, verifyPassword } from '../../../../lib/password';
 import { createAuthProvider, SESSION_COOKIE } from '../../../../lib/auth';
 
 export async function POST(request: Request) {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   try {
     const body = await request.json();
 
@@ -119,7 +121,7 @@ export async function POST(request: Request) {
         value: token,
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: isProduction,
         path: '/',
         maxAge: 60 * 60 * 8,
       });
@@ -134,6 +136,9 @@ export async function POST(request: Request) {
      * to continue working until we create the first database
      * administrator.
      */
+    if (isProduction) {
+      return NextResponse.json({ error: 'Invalid administrator credentials.' }, { status: 401 });
+    }
     const provider = createAuthProvider();
 
     const session = await provider.authenticate({
@@ -169,7 +174,7 @@ export async function POST(request: Request) {
       value: token,
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
       path: '/',
       maxAge: 60 * 60 * 8,
     });
