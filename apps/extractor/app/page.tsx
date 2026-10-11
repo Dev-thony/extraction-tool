@@ -27,7 +27,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-const MAX_LOCAL_FILES = 200;
+const MAX_LOCAL_FILES = 1000;
 
 const GOOGLE_DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly';
 
@@ -660,7 +660,7 @@ export default function ExtractorPage() {
 
               <p>Drag and drop multiple images here, or click to browse.</p>
 
-              <span>JPG, PNG or WEBP · Maximum 10 MB per image · Up to 200 images</span>
+              <span>JPG, PNG or WEBP · Maximum 10 MB per image · Up to 1,000 images</span>
 
               <input
                 ref={inputRef}

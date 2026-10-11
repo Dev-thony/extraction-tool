@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ExtractionRecord, ProcessingStatus, RecordSortField } from '@extraction/types';
 
 import { exportRecords } from '../lib/export-records';
+import { toTitleCaseName } from '@extraction/core/name-format';
 
 interface RecordsResponse {
   items: ExtractionRecord[];
@@ -66,6 +67,8 @@ export function RecordsTable() {
 
   const [status, setStatus] = useState<ProcessingStatus | ''>('');
 
+  const [alphaFilter, setAlphaFilter] = useState('');
+
   const [dateFrom, setDateFrom] = useState('');
 
   const [dateTo, setDateTo] = useState('');
@@ -106,6 +109,7 @@ export function RecordsTable() {
       params.set('pageSize', '20');
       params.set('sortBy', sortBy);
       params.set('sortDir', sortDir);
+      if (alphaFilter) params.set('firstLetter', alphaFilter);
 
       if (search.trim()) {
         params.set('search', search.trim());
@@ -141,7 +145,7 @@ export function RecordsTable() {
     } finally {
       setLoading(false);
     }
-  }, [page, sortBy, sortDir, search, status, dateFrom, dateTo]);
+  }, [page, sortBy, sortDir, search, status, dateFrom, dateTo, alphaFilter]);
 
   useEffect(() => {
     void loadRecords();
@@ -203,6 +207,7 @@ export function RecordsTable() {
   function resetFilters() {
     setSearch('');
     setStatus('');
+    setAlphaFilter('');
     setDateFrom('');
     setDateTo('');
     setPage(1);
@@ -306,6 +311,17 @@ export function RecordsTable() {
             <option key={value} value={value}>
               {value}
             </option>
+          ))}
+        </select>
+
+        <select
+          aria-label="Filter names by first letter"
+          value={alphaFilter}
+          onChange={(event) => { setAlphaFilter(event.target.value); setPage(1); }}
+        >
+          <option value="">All letters</option>
+          {Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ').map((letter) => (
+            <option key={letter} value={letter}>{letter}</option>
           ))}
         </select>
 
@@ -458,11 +474,11 @@ export function RecordsTable() {
 
                     <td>
                       <a href={`/records/${record.id}`} className="record-link">
-                        {record.fullName || 'Unnamed'}
+                        {toTitleCaseName(record.fullName) || 'Unnamed'}
                       </a>
                     </td>
 
-                    <td>{record.userName || '—'}</td>
+                    <td>{toTitleCaseName(record.userName) || '—'}</td>
 
                     <td>{record.email || '—'}</td>
 

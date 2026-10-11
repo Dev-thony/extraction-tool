@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@extraction/db';
 import { UpdateRecordInputSchema } from '@extraction/types';
+import { toTitleCaseName } from '@extraction/core/name-format';
 import { requireAdminSession } from '../../../../lib/auth';
 
 interface RouteContext {
@@ -78,7 +79,11 @@ export async function PATCH(request: Request, context: RouteContext) {
       where: {
         id,
       },
-      data: input,
+      data: {
+        ...input,
+        ...(Object.prototype.hasOwnProperty.call(input, 'fullName') ? { fullName: toTitleCaseName(input.fullName) } : {}),
+        ...(Object.prototype.hasOwnProperty.call(input, 'userName') ? { userName: toTitleCaseName(input.userName) } : {}),
+      },
     });
 
     await prisma.processingLog.create({

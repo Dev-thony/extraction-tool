@@ -1,0 +1,23 @@
+EXTRACTION TOOL REPAIR REPORT
+Project root: /home/blockchainwhizzy/Desktop/ALL PROJECTS/Extraction Tool
+Backup directory: /home/blockchainwhizzy/Desktop/ALL PROJECTS/Extraction Tool/.repair-backups/20261011-223439
+Files changed: 9
+
+packages/core/src/utils/name-format.ts (created)
+packages/core/src/index.ts
+apps/extractor/app/page.tsx
+apps/extractor/app/api/batches/route.ts
+apps/extractor/app/api/batches/[id]/process/route.ts
+apps/admin/app/api/records/[id]/route.ts
+apps/admin/components/records-table.tsx
+apps/admin/app/api/records/route.ts
+apps/admin/app/globals.css
+
+DAILY LIMIT FINDING:
+No explicit daily quota implementation was found in the inspected source files. The script changed the existing per-batch upload cap from 200 to 1,000, but did NOT implement a separate 1,000-per-day quota. Do not treat these as equivalent. A safe daily quota requires a defined unit (uploaded images vs processed images) and transaction/concurrency handling.
+
+NEXT STEPS:
+1. Review the diff and repair report.
+2. Run npm install if needed, then npm run typecheck/build using the project scripts.
+3. Test a small upload, a failed upload, A-Z filtering, editing a name, and mobile layouts.
+4. Confirm the daily quota policy before implementing a separate day-based counter.

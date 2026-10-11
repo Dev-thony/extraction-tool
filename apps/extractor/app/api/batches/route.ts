@@ -5,7 +5,7 @@ import { getEnv, getStorageProvider } from '@extraction/core';
 import { prisma } from '@extraction/db';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MAX_BATCH_ITEMS = 200;
+const MAX_BATCH_ITEMS = 1000;
 
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 

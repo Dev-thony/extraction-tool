@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { getEnv, getOcrProvider, getStorageProvider, runExtraction } from '@extraction/core';
+import { toTitleCaseName } from '@extraction/core/name-format';
 
 import { prisma } from '@extraction/db';
 
@@ -337,8 +338,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
               imageUrl: storage.getUrl(sourceKey!),
               imageKey: sourceKey!,
 
-              fullName: extracted.fields.fullName,
-              userName: extracted.fields.userName,
+              fullName: toTitleCaseName(extracted.fields.fullName),
+              userName: toTitleCaseName(extracted.fields.userName),
               email: extracted.fields.email,
               phoneNumber: extracted.fields.phoneNumber,
               pukNumber: extracted.fields.pukNumber,

@@ -8,6 +8,8 @@ export async function GET(request: Request) {
     await requireAdminSession();
 
     const { searchParams } = new URL(request.url);
+    const firstLetterRaw = searchParams.get('firstLetter')?.trim().toLocaleUpperCase() ?? '';
+    const firstLetter = /^[A-Z]$/.test(firstLetterRaw) ? firstLetterRaw : '';
 
     const query = RecordListQuerySchema.parse({
       page: searchParams.get('page') ?? undefined,
@@ -27,6 +29,10 @@ export async function GET(request: Request) {
         ? {
             status,
           }
+        : {}),
+
+      ...(firstLetter
+        ? { fullName: { startsWith: firstLetter, mode: 'insensitive' as const } }
         : {}),
 
       ...(search
