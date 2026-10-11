@@ -1,0 +1,15 @@
+
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dataextractor.app",
+      "sha256_cert_fingerprints": [
+        "19:03:A8:76:7D:D7:C8:23:B5:67:9C:00:5E:FB:AA:B3:B0:86:03:09:4B:34:17:AF:BC:4F:EC:57:64:4E:BD:BE"
+      ]
+    }
+  }
+]

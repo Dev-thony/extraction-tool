@@ -62,3 +62,9 @@ reports/
 # Uploaded user data
 apps/*/storage/uploads/*
 !apps/*/storage/uploads/.gitkeep
+
+# Android local machine configuration
+android/*/local.properties
+
+# Android local machine configuration
+android/*/local.properties
