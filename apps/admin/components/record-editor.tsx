@@ -146,14 +146,7 @@ export function RecordEditor({ record }: Props) {
         </div>
       )}
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(300px, 1fr) minmax(360px, 1fr)',
-          gap: 20,
-          alignItems: 'start',
-        }}
-      >
+      <div className="record-editor-layout">
         <ImagePanel imageUrl={record.imageUrl} recordId={record.id} />
 
         <div

@@ -1,0 +1,30 @@
+EXTRACTION TOOL MOBILE / QUEUE / APK REPAIR REPORT
+Project root: /home/blockchainwhizzy/Desktop/ALL PROJECTS/Extraction Tool
+Backup directory: /home/blockchainwhizzy/Desktop/ALL PROJECTS/Extraction Tool/.repair-backups/mobile-queue-apk-20261012-003929
+Changed files: 3
+Created files: 2
+
+CHANGED FILES:
+apps/admin/app/globals.css
+apps/admin/components/record-editor.tsx
+apps/admin/components/batch-detail.tsx
+
+CREATED FILES:
+apps/admin/app/api/batches/[id]/process/route.ts
+apps/admin/app/api/download-apk/route.ts
+
+REQUIRED CONFIGURATION:
+Set EXTRACTOR_API_URL on the ADMIN app to the extractor deployment origin, e.g. https://your-extractor-domain.example (no trailing slash). Do not put credentials in this value.
+
+IMPORTANT GOOGLE DRIVE LIMITATION:
+The current Drive preparation route intentionally stores Drive file IDs but does not download image bytes or persist OAuth tokens. Existing Drive queue items without sourceKey cannot be processed from the admin portal unless a valid Google Drive access token is supplied to the extractor process endpoint. This script does not persist OAuth tokens or alter existing database records. The correct durable fix is to stage each selected Drive image into configured storage while the user is authorized during batch creation, then queue it with sourceKey set. Existing batches may need reauthorization/reselection or a controlled recovery flow.
+
+APK:
+New endpoint: /api/download-apk. It sends apps/admin/public/downloads/Data-Extractor-Admin.apk as an attachment. Confirm the APK is tracked by Git and deployed; the endpoint cannot download a file that is absent from the deployment.
+
+NEXT STEPS:
+1. Review changes and report.
+2. Configure EXTRACTOR_API_URL for local admin and the Vercel admin project.
+3. Run npm run typecheck --workspaces --if-present and npm run build.
+4. Test admin mobile/tablet layouts, local queue processing, and the APK endpoint.
+5. Do not assume existing Drive queue items are repaired until their sourceKey/token situation is resolved.

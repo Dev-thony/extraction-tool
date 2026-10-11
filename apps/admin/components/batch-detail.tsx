@@ -117,11 +117,11 @@ export function BatchDetail({ batchId }: { batchId: string }) {
 
       const result = await response.json().catch(() => null);
 
-      if (!response.ok) {
+      if (!response.ok || result?.success === false) {
         throw new Error(result?.error || 'Could not process the next queued item.');
       }
 
-      setNotice('Processing request completed.');
+      setNotice(result?.message || (result?.done ? 'No queued items remain.' : 'Processing request completed.'));
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not process the next item.');
